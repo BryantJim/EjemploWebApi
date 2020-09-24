@@ -1,0 +1,87 @@
+﻿@page "/Estudiantes"
+
+@using System.Net.Http
+@inject HttpClient Http
+
+<h3>Estudiantes</h3> 
+
+<EditForm Model="estudiante" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+
+    <div class="card">
+        <div class="card-header">
+            <h3>Registro de Personas</h3>
+        </div>
+        <div class="card-body">
+            <form>
+                <div class="form-row align-items-center">
+                    <div class="col">
+                        <div class="form-group">
+                            <label>Persona Id</label>
+                            <div class="input-group">
+                                <InputNumber @bind-Value="estudiante.Id" class="form-control col-4" />
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar">Buscar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*Nombres*@
+                <div class="form-group">
+                    <label>Nombres</label>
+                    <InputText @bind-Value="estudiante.Nombres" class="form-control" />
+                    <ValidationMessage For="@(() => estudiante.Nombres)" />
+                </div>
+
+                @*Semestre*@
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <InputNumber @bind-Value="estudiante.Semestre"
+                               class="form-control" />
+                    <ValidationMessage For="@(() => estudiante.Semestre)" />
+                </div>
+
+                @*Nacionalidad*@
+                <div class="form-group">
+                    <label>Cédula</label>
+                    <InputText @bind-Value="estudiante.Nacionalidad" class="form-control" />
+                    <ValidationMessage For="@(() => estudiante.Nacionalidad)" />
+                </div>
+            </form>
+        </div>
+        <div class="card-footer">
+            <div class="form-group text-center" display: inline-block>
+                <button type="button" class="btn btn-lg btn-primary" @onclick="Nuevo">Nuevo</button>
+                <button type="submit" class="btn btn-lg btn-success">Guardar</button>
+                <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+
+    private Estudiantes estudiante = new Estudiantes();
+
+    private void Nuevo()
+    {
+        estudiante = new Estudiantes();
+    }
+
+    private async Task Guardar()
+    {
+        await Http.PostAsJsonAsync("http://localhost:8081/Api/Estudiantes", estudiante);
+    }
+
+    public void Eliminar()
+    {
+
+    }
+
+    private async Task Buscar()
+    {
+        estudiante = await Http.GetFromJsonAsync<Estudiantes>($"http://localhost:8081/Api/Estudiantes/{estudiante.Id}");
+    }
+}
